@@ -1,0 +1,15 @@
+{
+  "name": "github-team-tools",
+  "version": "0.0.1",
+  "description": "Adds all GitHub organization members & repos into a (read only) team.",
+  "main": "lib/add-all-org-resources-to-team.js",
+  "dependencies": {
+    "octonode": "git+ssh://git@github.com:pksunkara/octonode.git#v0.6.16"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Seb Flippence",
+  "license": "ISC"
+}
