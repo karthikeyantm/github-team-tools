@@ -33,6 +33,9 @@ function AddAllOrgResourcesToTeam(usrConfig) {
 
   // Debug
   client.get('/user', {}, function (err, status, body, headers) {
+    if (err) {
+      throw(err);
+    }
     console.log('logged in as', body.login);
   });
 
