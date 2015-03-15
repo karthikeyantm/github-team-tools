@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * github-team-tools v0.0.1
+ * github-team-tools v0.0.3
  */
 var github = require('octonode'),
     bunyan = require('bunyan'),
@@ -210,7 +210,7 @@ var getMissingKeys = function(readOnlyResources, allResources) {
 /**
  * Loop through & get read only team repos and all org repos and add any missing repos
  */
-AddAllOrgResourcesToTeam.prototype.addMisingRepos = function (dryRun) {
+AddAllOrgResourcesToTeam.prototype.addMisingRepos = function (callback, dryRun) {
   getGhResourceData(ghteam, 'repos', function (readOnlyRepos) {
 
     getGhResourceData(ghorg, 'repos', function (allOrgRepos) {
@@ -224,6 +224,7 @@ AddAllOrgResourcesToTeam.prototype.addMisingRepos = function (dryRun) {
         });
         log.info('Not adding repos in dry-run mode:', repos);
       }
+      callback();
     });
   });
 };
@@ -231,7 +232,7 @@ AddAllOrgResourcesToTeam.prototype.addMisingRepos = function (dryRun) {
 /**
  * Loop through & get read only team users and all org users and add any missing users
  */
-AddAllOrgResourcesToTeam.prototype.addMisingUsers = function (dryRun) {
+AddAllOrgResourcesToTeam.prototype.addMisingUsers = function (callback, dryRun) {
   getGhResourceData(ghteam, 'members', function (readOnlyUsers) {
 
     getGhResourceData(ghorg, 'members', function (allOrgUsers) {
@@ -245,6 +246,7 @@ AddAllOrgResourcesToTeam.prototype.addMisingUsers = function (dryRun) {
         });
         log.info('Not adding users in dry-run mode:', users);
       }
+      callback();
     });
   });
 };
@@ -252,7 +254,7 @@ AddAllOrgResourcesToTeam.prototype.addMisingUsers = function (dryRun) {
 /**
  * Removes users that are only in the read only group
  */
-AddAllOrgResourcesToTeam.prototype.removeUsersOnlyInReadOnly = function (dryRun) {
+AddAllOrgResourcesToTeam.prototype.removeUsersOnlyInReadOnly = function (callback, dryRun) {
   // Get all teams users (except read only team)
     // Get teams
     getGhResourceData(ghorg, 'teams', function (allOrgTeams) {
@@ -276,6 +278,7 @@ AddAllOrgResourcesToTeam.prototype.removeUsersOnlyInReadOnly = function (dryRun)
           } else {
             log.info('Not removing users in dry-run mode:', onlyInReadTeam);
           }
+          callback();
         });
       });
   });
