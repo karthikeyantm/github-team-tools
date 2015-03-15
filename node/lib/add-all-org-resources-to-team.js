@@ -41,7 +41,7 @@ function AddAllOrgResourcesToTeam(usrConfig) {
       left: left, // 4999
       max: max // 5000
     });
-  });  
+  });
 }
 
 /**
@@ -94,6 +94,34 @@ var getGhResourceData = function(resource, type, callback, page) {
 };
 
 /**
+ * Returns an array of all members in the array of teams
+ *
+ * @param {array} teamKeys - teams keys
+ * @param {object} team
+ * @param {function} callback
+ * @param {array} members
+ * @callback
+ */
+var getAllMembersForTeams = function(teamKeys, teams, callback, members) {
+  var members = members || [],
+      teamKey = teamKeys.pop(),
+      team = teams[teamKey];
+
+  if (!team) {
+     callback(members);
+   } else {
+    var teamClient = client.team(teamKey);
+    getGhResourceData(teamClient, 'members', function (teamMembers) {
+      console.log('got members for', team);
+      Object.keys(teamMembers).forEach(function (key) {
+        members.push(teamMembers[key]);
+      });
+      getAllMembersForTeams(teamKeys, teams, callback, members);
+    });
+  }
+};
+
+/**
  * Recursive loop through all repos and add to team
  *
  * @param {array} repoKeys
@@ -134,6 +162,22 @@ var addTeamUsers = function(userKeys, allUsers) {
 };
 
 /**
+ * Removes an array of users from the read only team
+ *
+ * @param {array} users
+ * @callback
+ */
+var removeUsers = function(usersToRemove) {
+  if (usersToRemove.length) {
+    var userToRemove = usersToRemove.pop();
+    ghteam.removeUser(userToRemove, function () {
+      console.log('removed user', userToRemove);
+      removeUsers(usersToRemove);
+    });
+  }
+};
+
+/**
  * Compute missing read only resources
  *
  * @param {object} readOnlyResources
@@ -152,7 +196,7 @@ var getMissingKeys = function(readOnlyResources, allResources) {
   // Get missing
   var missingKeys = allKeys.diff(readOnlyKeys);
   console.log('adding', missingKeys.length);
-  
+
   return missingKeys;
 };
 
@@ -162,7 +206,7 @@ var getMissingKeys = function(readOnlyResources, allResources) {
 AddAllOrgResourcesToTeam.prototype.addMisingRepos = function () {
   getGhResourceData(ghteam, 'repos', function (readOnlyRepos) {
 
-    getGhResourceData(ghorg, 'repos', function (allOrgRepos) {    
+    getGhResourceData(ghorg, 'repos', function (allOrgRepos) {
       var missingRepoKeys = getMissingKeys(readOnlyRepos, allOrgRepos);
       addTeamRepos(missingRepoKeys, allOrgRepos);
     });
@@ -179,6 +223,34 @@ AddAllOrgResourcesToTeam.prototype.addMisingUsers = function () {
       var missingUserKeys = getMissingKeys(readOnlyUsers, allOrgUsers);
       addTeamUsers(missingUserKeys, allOrgUsers);
     });
+  });
+};
+
+/**
+ * Removes users that are only in the read only group
+ */
+AddAllOrgResourcesToTeam.prototype.removeUsersOnlyInReadOnly = function () {
+  // Get all teams users (except read only team)
+    // Get teams
+    getGhResourceData(ghorg, 'teams', function (allOrgTeams) {
+      // Remove read only team
+      delete allOrgTeams[config.readOnlyTeamId];
+
+      // Get users
+      getAllMembersForTeams(Object.keys(allOrgTeams), allOrgTeams, function (nonReadOnlyUsers) {
+        // Get read only team users
+        getGhResourceData(ghteam, 'members', function (readOnlyUsers) {
+          var onlyInReadTeam = [];
+          Object.keys(readOnlyUsers).forEach(function (key) {
+              var user = readOnlyUsers[key];
+              if (nonReadOnlyUsers.indexOf(user) === -1) {
+                onlyInReadTeam.push(user);
+              }
+          });
+
+          removeUsers(onlyInReadTeam);
+        });
+      });
   });
 };
 
