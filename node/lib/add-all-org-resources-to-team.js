@@ -64,15 +64,23 @@ var getGhResourceData = function(resource, type, callback, page) {
     console.log('on page', page);
 
     data.map(function(rd) {
-      if (type === 'repos') {
-        // Only add if its a repo owned by the org
-        if (rd.full_name.indexOf(config.orgName + '/') === 0) {        
-          resourceData[rd.id] = rd.name;
-        }
-      } else if (type === 'members') {
-        resourceData[rd.id] = rd.login;
-      } else {
-        throw('I dont know how to handle: ' + type);
+      switch (type) {
+        case 'repos':
+          // Only add if its a repo owned by the org & not blacklisted
+          if (rd.full_name.indexOf(config.orgName + '/') === 0 && config.blacklist.repos.indexOf(rd.name) === -1) {
+            resourceData[rd.id] = rd.name;
+          }
+          break;
+        case 'members':
+          if (config.blacklist.members.indexOf(rd.login) === -1) {
+            resourceData[rd.id] = rd.login;
+          }
+          break;
+        case 'teams':
+          resourceData[rd.id] = rd.slug;
+          break;
+        default:
+          throw('I dont know how to handle: ' + type);
       }
     });
 
