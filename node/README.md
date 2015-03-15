@@ -19,7 +19,7 @@ export GITHUB_TEAM_ID="1234567"
 ```
 
 ```bash
-node add-all-org-repos-to-team.js
+node add-all-org-repos-to-team.js --dry-run | ./node_modules/bunyan/bin/bunyan
 ```
 
 ### node
@@ -31,8 +31,9 @@ var GhTeamTools = require('github-team-tools'),
       readOnlyTeamId: '1234567'
     };
 
-var ghTeamTools = new GhTeamTools(config);
-ghTeamTools.addMisingRepos();
+var dryRun = true,
+    ghTeamTools = new GhTeamTools(config);
+ghTeamTools.addMisingRepos(dryRun);
 ```
 
 ## Add all org members into a team
@@ -40,10 +41,25 @@ As above, but change the last line to:
 
 ### CLI
 ```bash
-node add-all-org-users-to-team.js
+node add-all-org-users-to-team.js --dry-run | ./node_modules/bunyan/bin/bunyan
 ```
 
 ### node
 ```javascript
-ghTeamTools.addMisingUsers();
+var dryRun = true;
+ghTeamTools.addMisingUsers(dryRun);
+```
+
+## Remove users that are only found in the read only team
+As above, but change the last line to:
+
+### CLI
+```bash
+node remove-org-users-only-read-team.js --dry-run | ./node_modules/bunyan/bin/bunyan
+```
+
+### node
+```javascript
+var dryRun = true;
+ghTeamTools.removeUsersOnlyInReadOnly(dryRun);
 ```

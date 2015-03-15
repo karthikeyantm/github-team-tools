@@ -4,7 +4,9 @@
  * github-team-tools v0.0.1
  */
 var github = require('octonode'),
+    bunyan = require('bunyan'),
     config = {},
+    log,
     client,
     ghorg,
     ghteam;
@@ -27,20 +29,22 @@ Array.prototype.diff = function(a) {
  */
 function AddAllOrgResourcesToTeam(usrConfig) {
   config = usrConfig;
+  log = usrConfig && usrConfig.logger || bunyan.createLogger({name: 'github-team-tools'});
   client = github.client(config.token);
   ghorg = client.org(config.orgName);
   ghteam = client.team(config.readOnlyTeamId);
+
 
   // Debug
   client.get('/user', {}, function (err, status, body, headers) {
     if (err) {
       throw(err);
     }
-    console.log('logged in as', body.login);
+    log.info('logged in as', body.login);
   });
 
   client.limit(function (err, left, max) {
-    console.log('rate limit', {
+    log.info('rate limit', {
       left: left, // 4999
       max: max // 5000
     });
@@ -64,7 +68,7 @@ var getGhResourceData = function(resource, type, callback, page) {
   }
 
   resource[type](page, function(err, data, headers) {
-    console.log('on page', page);
+    log.info('on page', page);
 
     data.map(function(rd) {
       switch (type) {
@@ -115,7 +119,7 @@ var getAllMembersForTeams = function(teamKeys, teams, callback, members) {
    } else {
     var teamClient = client.team(teamKey);
     getGhResourceData(teamClient, 'members', function (teamMembers) {
-      console.log('got members for', team);
+      log.info('got members for', team);
       Object.keys(teamMembers).forEach(function (key) {
         members.push(teamMembers[key]);
       });
@@ -136,7 +140,7 @@ var addTeamRepos = function(repoKeys, allRepos) {
 
   if (repo) {
     ghorg.addTeamRepo(config.readOnlyTeamId, repo, function() {
-      console.log('added', repo);
+      log.info('added', repo);
       if (repoKeys.length > 0) {
         addTeamRepos(repoKeys, allRepos);
       }
@@ -156,7 +160,7 @@ var addTeamUsers = function(userKeys, allUsers) {
 
   if (user) {
     ghteam.addUser(user, function() {
-      console.log('added', user);
+      log.info('added', user);
       if (userKey.length > 0) {
         addTeamRepos(userKeys, allUsers);
       }
@@ -174,7 +178,7 @@ var removeUsers = function(usersToRemove) {
   if (usersToRemove.length) {
     var userToRemove = usersToRemove.pop();
     ghteam.removeUser(userToRemove, function () {
-      console.log('removed user', userToRemove);
+      log.info('removed user', userToRemove);
       removeUsers(usersToRemove);
     });
   }
@@ -192,13 +196,13 @@ var getMissingKeys = function(readOnlyResources, allResources) {
       countReadOnly = readOnlyKeys.length,
       countAll =  allKeys.length;
 
-  console.log('readOnly count', countReadOnly);
-  console.log('all count', countAll);
-  console.log('diff', countAll - countReadOnly);
+  log.info('readOnly count', countReadOnly);
+  log.info('all count', countAll);
+  log.info('diff', countAll - countReadOnly);
 
   // Get missing
   var missingKeys = allKeys.diff(readOnlyKeys);
-  console.log('adding', missingKeys.length);
+  log.info('adding', missingKeys.length);
 
   return missingKeys;
 };
@@ -218,7 +222,7 @@ AddAllOrgResourcesToTeam.prototype.addMisingRepos = function (dryRun) {
         missingRepoKeys.forEach(function (repoKey) {
           repos.push(allOrgRepos[repoKey]);
         });
-        console.log('Not adding repos in dry-run mode:', repos);
+        log.info('Not adding repos in dry-run mode:', repos);
       }
     });
   });
@@ -239,7 +243,7 @@ AddAllOrgResourcesToTeam.prototype.addMisingUsers = function (dryRun) {
         missingUserKeys.forEach(function (userKey) {
           users.push(allOrgUsers[userKey]);
         });
-        console.log('Not adding users in dry-run mode:', users);
+        log.info('Not adding users in dry-run mode:', users);
       }
     });
   });
@@ -270,7 +274,7 @@ AddAllOrgResourcesToTeam.prototype.removeUsersOnlyInReadOnly = function (dryRun)
           if (!dryRun) {
             removeUsers(onlyInReadTeam);
           } else {
-            console.log('Not removing users in dry-run mode:', onlyInReadTeam);
+            log.info('Not removing users in dry-run mode:', onlyInReadTeam);
           }
         });
       });
