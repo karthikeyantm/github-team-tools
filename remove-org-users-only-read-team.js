@@ -1,4 +1,4 @@
-var AddAllOrgResourcesToTeam = require('./lib/add-all-org-resources-to-team'),
+var AddAllOrgResourcesToTeam = require('./lib/github-team-tools'),
     config = require('./config'),
     dryRun = (process.argv && process.argv.indexOf('--dry-run') !== -1);
 
