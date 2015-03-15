@@ -2,6 +2,10 @@
   "name": "github-team-tools",
   "version": "0.0.3",
   "description": "Adds all GitHub organization members & repos into a (read only) team.",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/BBC/github-team-tools.git"
+  },
   "main": "./lib/github-team-tools.js",
   "dependencies": {
     "bunyan": "^1.3.4",
