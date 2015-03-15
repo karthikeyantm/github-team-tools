@@ -203,12 +203,20 @@ var getMissingKeys = function(readOnlyResources, allResources) {
 /**
  * Loop through & get read only team repos and all org repos and add any missing repos
  */
-AddAllOrgResourcesToTeam.prototype.addMisingRepos = function () {
+AddAllOrgResourcesToTeam.prototype.addMisingRepos = function (dryRun) {
   getGhResourceData(ghteam, 'repos', function (readOnlyRepos) {
 
     getGhResourceData(ghorg, 'repos', function (allOrgRepos) {
       var missingRepoKeys = getMissingKeys(readOnlyRepos, allOrgRepos);
-      addTeamRepos(missingRepoKeys, allOrgRepos);
+      if (!dryRun) {
+        addTeamRepos(missingRepoKeys, allOrgRepos);
+      } else {
+        var repos = [];
+        missingRepoKeys.forEach(function (repoKey) {
+          repos.push(allOrgRepos[repoKey]);
+        });
+        console.log('Not adding repos in dry-run mode:', repos);
+      }
     });
   });
 };
@@ -216,12 +224,20 @@ AddAllOrgResourcesToTeam.prototype.addMisingRepos = function () {
 /**
  * Loop through & get read only team users and all org users and add any missing users
  */
-AddAllOrgResourcesToTeam.prototype.addMisingUsers = function () {
+AddAllOrgResourcesToTeam.prototype.addMisingUsers = function (dryRun) {
   getGhResourceData(ghteam, 'members', function (readOnlyUsers) {
 
     getGhResourceData(ghorg, 'members', function (allOrgUsers) {
       var missingUserKeys = getMissingKeys(readOnlyUsers, allOrgUsers);
-      addTeamUsers(missingUserKeys, allOrgUsers);
+      if (!dryRun) {
+        addTeamUsers(missingUserKeys, allOrgUsers);
+      } else {
+        var users = [];
+        missingUserKeys.forEach(function (userKey) {
+          users.push(allOrgUsers[userKey]);
+        });
+        console.log('Not adding users in dry-run mode:', users);
+      }
     });
   });
 };
@@ -229,7 +245,7 @@ AddAllOrgResourcesToTeam.prototype.addMisingUsers = function () {
 /**
  * Removes users that are only in the read only group
  */
-AddAllOrgResourcesToTeam.prototype.removeUsersOnlyInReadOnly = function () {
+AddAllOrgResourcesToTeam.prototype.removeUsersOnlyInReadOnly = function (dryRun) {
   // Get all teams users (except read only team)
     // Get teams
     getGhResourceData(ghorg, 'teams', function (allOrgTeams) {
@@ -248,7 +264,11 @@ AddAllOrgResourcesToTeam.prototype.removeUsersOnlyInReadOnly = function () {
               }
           });
 
-          removeUsers(onlyInReadTeam);
+          if (!dryRun) {
+            removeUsers(onlyInReadTeam);
+          } else {
+            console.log('Not removing users in dry-run mode:', onlyInReadTeam);
+          }
         });
       });
   });
