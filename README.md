@@ -1,7 +1,8 @@
-GitHub Team Tools v0.0.3
+GitHub Team Tools v0.0.4
 ========================
 
-Adds all GitHub organization members & repos into a (read only) team.
+Adds all GitHub organization members & repos into a (read only) team.  
+Note you need to be a member of the GitHub organizations Owners team to be able to run this.
 
 # Usage
 ```bash
@@ -19,7 +20,7 @@ export GITHUB_TEAM_ID="1234567"
 ```
 
 ```bash
-node add-all-org-repos-to-team.js --dry-run | ./node_modules/bunyan/bin/bunyan
+gulp add-repos --dry-run
 ```
 
 ### node
@@ -39,14 +40,15 @@ ghTeamTools.addMisingRepos(function () {
 ```
 
 ## Add all org members into a team
-As above, but change the last line to:
 
 ### CLI
 ```bash
-node add-all-org-users-to-team.js --dry-run | ./node_modules/bunyan/bin/bunyan
+gulp add-users --dry-run
 ```
 
 ### node
+As above, but change the last command to:
+
 ```javascript
 ghTeamTools.addMisingUsers(function () {
     console.log('done');
@@ -54,14 +56,15 @@ ghTeamTools.addMisingUsers(function () {
 ```
 
 ## Remove users that are only found in the read only team
-As above, but change the last line to:
 
 ### CLI
 ```bash
-node remove-org-users-only-read-team.js --dry-run | ./node_modules/bunyan/bin/bunyan
+gulp remove-users --dry-run
 ```
 
 ### node
+As above, but change the last command to:
+
 ```javascript
 ghTeamTools.removeUsersOnlyInReadOnly(function () {
     console.log('done');

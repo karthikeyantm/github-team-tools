@@ -1,6 +1,6 @@
 {
   "name": "github-team-tools",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Adds all GitHub organization members & repos into a (read only) team.",
   "repository": {
     "type": "git",
@@ -11,7 +11,9 @@
     "bunyan": "^1.3.4",
     "octonode": "git+ssh://git@github.com:pksunkara/octonode.git#v0.6.16"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp": "^3.8.11"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
