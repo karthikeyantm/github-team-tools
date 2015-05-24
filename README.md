@@ -1,4 +1,4 @@
-GitHub Team Tools v0.0.4
+GitHub Team Tools v0.0.5
 ========================
 
 Adds all GitHub organization members & repos into a (read only) team.  
@@ -11,29 +11,34 @@ npm install
 
 If behind a proxy make sure to export `HTTP_PROXY`
 
-## Add all org repos into a team
-### CLI
+### CLI setup
 ```bash
 export GITHUB_TOKEN="your-github-app-token"
 export GITHUB_ORG_NAME="my-org"
 export GITHUB_TEAM_ID="1234567"
 ```
 
+### node setup
+```javascript
+var GhTeamTools = require('github-team-tools'),
+    config = {
+      token: process.env.GITHUB_TOKEN,
+      orgName: process.env.GITHUB_ORG_NAME,
+      readOnlyTeamId: process.env.GITHUB_TEAM_ID,
+    };
+
+var ghTeamTools = new GhTeamTools(config),
+    dryRun = true;
+```
+
+## Add all org repos into a team
+### CLI
 ```bash
 gulp add-repos --dry-run
 ```
 
 ### node
 ```javascript
-var GhTeamTools = require('github-team-tools'),
-    config = {
-      token: 'your-github-app-token',
-      orgName: 'my-org',
-      readOnlyTeamId: '1234567'
-    };
-
-var ghTeamTools = new GhTeamTools(config),
-    dryRun = true;
 ghTeamTools.addMissingRepos(function () {
     console.log('done');
 }, dryRun);
@@ -47,15 +52,27 @@ gulp add-users --dry-run
 ```
 
 ### node
-As above, but change the last command to:
-
 ```javascript
 ghTeamTools.addMissingUsers(function () {
     console.log('done');
 }, dryRun);
 ```
 
-## Remove users that are only found in the read only team
+## Add a member into a team
+
+### CLI
+```bash
+gulp add-user --user <username>
+```
+
+### node
+```javascript
+ghTeamTools.addUser('<username>', function () {
+    console.log('done');
+});
+```
+
+## Remove users that are only found in a team
 
 ### CLI
 ```bash
@@ -63,10 +80,22 @@ gulp remove-users --dry-run
 ```
 
 ### node
-As above, but change the last command to:
-
 ```javascript
 ghTeamTools.removeUsersOnlyInReadOnly(function () {
     console.log('done');
 }, dryRun);
+```
+
+## Only remove a user from a team if they are not found in any other teams
+
+### CLI
+```bash
+gulp remove-user --user <username>
+```
+
+### node
+```javascript
+ghTeamTools.removeUserOnlyInReadOnly('<username>', function () {
+    console.log('done');
+});
 ```

@@ -1,10 +1,10 @@
 {
   "name": "github-team-tools",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Adds all GitHub organization members & repos into a (read only) team.",
   "repository": {
     "type": "git",
-    "url": "http://github.com/BBC/github-team-tools.git"
+    "url": "http://github.com/sebflipper/github-team-tools.git"
   },
   "main": "./lib/github-team-tools.js",
   "dependencies": {
@@ -12,7 +12,8 @@
     "octonode": "git+ssh://git@github.com:pksunkara/octonode.git#v0.6.16"
   },
   "devDependencies": {
-    "gulp": "^3.8.11"
+    "gulp": "^3.8.11",
+    "yargs": "^3.9.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
