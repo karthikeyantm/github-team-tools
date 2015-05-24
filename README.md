@@ -1,4 +1,4 @@
-GitHub Team Tools v0.0.5
+GitHub Team Tools v0.0.6
 ========================
 
 Adds all GitHub organization members & repos into a (read only) team.  
