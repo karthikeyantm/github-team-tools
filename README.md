@@ -34,7 +34,7 @@ var GhTeamTools = require('github-team-tools'),
 
 var ghTeamTools = new GhTeamTools(config),
     dryRun = true;
-ghTeamTools.addMisingRepos(function () {
+ghTeamTools.addMissingRepos(function () {
     console.log('done');
 }, dryRun);
 ```
@@ -50,7 +50,7 @@ gulp add-users --dry-run
 As above, but change the last command to:
 
 ```javascript
-ghTeamTools.addMisingUsers(function () {
+ghTeamTools.addMissingUsers(function () {
     console.log('done');
 }, dryRun);
 ```

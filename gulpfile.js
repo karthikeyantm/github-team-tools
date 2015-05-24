@@ -9,13 +9,13 @@ gulp.task('default', function() {
 });
 
 gulp.task('add-repos', function(done) {
-  addAllOrgResourcesToTeam.addMisingRepos(function () {
+  addAllOrgResourcesToTeam.addMissingRepos(function () {
     done();
   }, dryRun);
 });
 
 gulp.task('add-users', function(done) {
-  addAllOrgResourcesToTeam.addMisingUsers(function () {
+  addAllOrgResourcesToTeam.addMissingUsers(function () {
     done();
   }, dryRun);
 });
