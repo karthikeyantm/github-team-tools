@@ -15,6 +15,17 @@ gulp.task('add-repos', function(done) {
   }, dryRun);
 });
 
+gulp.task('add-repo', function(done) {
+  var repo = argv.repo || null;
+  if (repo) {
+    addAllOrgResourcesToTeam.addRepo(repo, function () {
+      done();
+    });
+  } else {
+    console.log('Please specify repo with --repo <repo>');
+  }
+});
+
 gulp.task('add-users', function(done) {
   addAllOrgResourcesToTeam.addMissingUsers(function () {
     done();

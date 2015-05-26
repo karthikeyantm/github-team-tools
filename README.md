@@ -1,4 +1,4 @@
-GitHub Team Tools v0.0.6
+GitHub Team Tools v0.0.7
 ========================
 
 Adds all GitHub organization members & repos into a (read only) team.  
@@ -44,6 +44,20 @@ ghTeamTools.addMissingRepos(function () {
 }, dryRun);
 ```
 
+## Add a single repo into a team
+
+### CLI
+```bash
+gulp add-repo --repo <repo>
+```
+
+### node
+```javascript
+ghTeamTools.addRepo('<repo>', function () {
+    console.log('done');
+});
+```
+
 ## Add all org members into a team
 
 ### CLI
@@ -58,7 +72,7 @@ ghTeamTools.addMissingUsers(function () {
 }, dryRun);
 ```
 
-## Add a member into a team
+## Add a single member into a team
 
 ### CLI
 ```bash

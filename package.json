@@ -1,6 +1,6 @@
 {
   "name": "github-team-tools",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Adds all GitHub organization members & repos into a (read only) team.",
   "repository": {
     "type": "git",
