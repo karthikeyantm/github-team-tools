@@ -1,6 +1,9 @@
 GitHub Team Tools v0.0.7
 ========================
 
+**Note:** GitHub has updated their permissions model so this tool is now redundant.
+More details see [GitHub Help on Setting up teams (improved organization permissions)](https://help.github.com/articles/setting-up-teams-improved-organization-permissions/)
+
 Adds all GitHub organization members & repos into a (read only) team.  
 Note you need to be a member of the GitHub organizations Owners team to be able to run this.
 
